@@ -1,5 +1,19 @@
-apply plugin: 'docker'
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        mavenCentral()
+    }
+    dependencies {
+        classpath('org.springframework.boot:spring-boot-gradle-plugin:1.5.10.RELEASE')
+        classpath('gradle.plugin.com.palantir.gradle.docker:gradle-docker:0.13.0')
+    }
+}
+
 apply plugin: 'java'
+apply plugin: 'com.palantir.docker'
+apply plugin: 'org.springframework.boot'
 
 buildscript {
     repositories { jcenter() }
@@ -24,16 +38,10 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 
-task buildDocker(type: Docker, dependsOn: build) {
-    push = true
-    applicationName = jar.baseName
-    dockerfile = file('Dockerfile')
-    doFirst {
-        copy {
-            from jar
-            into stageDir
-        }
-    }
+docker {
+    name "${project.group}/${jar.baseName}"
+    files jar.archivePath
+    buildArgs(['JAR_FILE': "${jar.archiveName}"])
 }
 
 dependencies {
