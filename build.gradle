@@ -1,13 +1,39 @@
+apply plugin: 'docker'
+apply plugin: 'java'
+
+buildscript {
+    repositories { jcenter() }
+    dependencies {
+        classpath 'se.transmode.gradle:gradle-docker:1.2'
+    }
+}
+
 group 'adjoint'
 version '0.0.1'
 
-apply plugin: 'java'
+jar {
+    baseName = 'adjoint-fraud-detection'
+    version =  '0.0.1'
+}
 
 sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
     maven { url 'https://jitpack.io' }
+}
+
+task buildDocker(type: Docker, dependsOn: build) {
+    push = true
+    applicationName = jar.baseName
+    dockerfile = file('Dockerfile')
+    doFirst {
+        copy {
+            from jar
+            into stageDir
+        }
+    }
 }
 
 dependencies {
