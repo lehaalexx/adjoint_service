@@ -47,5 +47,7 @@ docker {
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web:1.5.10.RELEASE")
     compile("com.github.adjoint-io:uplink-sdk-java:1.2")
+    compile("org.springframework.boot:spring-boot-starter-thymeleaf")
+    compile("org.springframework.boot:spring-boot-starter-security")
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
